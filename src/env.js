@@ -103,7 +103,7 @@ class Env {
     this.renderer.setClearColor(0x000000)
     this.scene = new THREE.Scene()
     this.camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000)
-    this.camera.position.set(2, 1, 8)
+    this.camera.position.set(0, -5, 10)
     document.querySelector('#app').appendChild(this.renderer.domElement)
   }
 

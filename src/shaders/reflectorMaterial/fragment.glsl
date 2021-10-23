@@ -47,11 +47,13 @@ vec3 dither(vec3 color) {
   return color + dither_shift_RGB;
 }
 
+uniform float uStrength;
+
 void main() {
   vec4 base = texture2D(tMap, vUv);
   vec4 blend = texture2DProj(tReflect, vCoord);
 
-  gl_FragColor = base * blend * 5.0;
+  gl_FragColor = base * blend * uStrength;
 
   base = gl_FragColor;
   blend = vec4(uColor, 1.0);

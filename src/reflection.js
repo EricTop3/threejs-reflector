@@ -12,9 +12,42 @@ export default class Reflection {
     this.scene = this.env.scene
     this.camera = this.env.camera
     this.pane = this.env.pane
+    this._setFog()
+    this._setConfig()
     this._loadModel()
     this._setMirror()
     this._setLights()
+    
+  }
+
+  _setFog() {
+    this.scene.fog = new THREE.Fog(0x000000, 0, 30)
+  }
+
+  _setConfig() {
+    this.config = {
+      strength: 10,
+      bluriness: 0
+    }
+    this.folder = this.pane.addFolder({
+      title: '倒影参数'
+    })
+    this.folder.addInput(this.config, 'strength', {
+      min: 1,
+      max: 100,
+      step: 0.1,
+      label: '倒影强度'
+    }).on('change', e => {
+      this.floorMat.uniforms.uStrength.value = e.value
+    })
+    this.folder.addInput(this.config, 'bluriness', {
+      min: 0,
+      max: 1,
+      step: 0.1,
+      label: '模糊度'
+    }).on('change', e => {
+      this.reflector.blurMaterial.uniforms.uBluriness.value = e.value
+    })
   }
 
   _setLights() {
@@ -34,12 +67,17 @@ export default class Reflection {
 
     const floorMat = new ReflectorMaterial({
       map: floorMap,
+      fog: this.scene.fog,
       dithering: true
     })
 
     floorMat.uniforms.tReflect = reflector.renderTargetUniform
     floorMat.uniforms.uMatrix = reflector.textureMatrixUniform
-
+    floorMat.uniforms.uStrength = {
+      value: this.config.strength
+    }
+    this.floorMat = floorMat
+    this.reflector = reflector
 
     const floorGeo = new THREE.PlaneGeometry(50, 50)
 
